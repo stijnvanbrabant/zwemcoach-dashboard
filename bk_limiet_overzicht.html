@@ -1,0 +1,552 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BK Limieten 2026 – Vanbrabant</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #07111f;
+    --card: #0d1f35;
+    --border: rgba(255,255,255,0.07);
+    --noah: #00c8ff;
+    --manon: #ff6b9d;
+    --gold: #ffd700;
+    --green: #4ade80;
+    --orange: #fb923c;
+    --red: #f87171;
+    --muted: #6b8fae;
+    --text: #e2eef8;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    padding: 32px 20px;
+  }
+  body::before {
+    content:'';
+    position:fixed; inset:0;
+    background: radial-gradient(ellipse at 15% 40%, rgba(0,150,200,0.12) 0%, transparent 55%),
+                radial-gradient(ellipse at 85% 60%, rgba(200,50,100,0.08) 0%, transparent 55%);
+    pointer-events:none; z-index:0;
+  }
+
+  .wrap { position:relative; z-index:1; max-width:1100px; margin:0 auto; }
+
+  /* Header */
+  header { text-align:center; margin-bottom:40px; }
+  header h1 {
+    font-family:'Bebas Neue',cursive;
+    font-size:3rem; letter-spacing:4px;
+    background:linear-gradient(135deg,#00c8ff,#ff6b9d);
+    -webkit-background-clip:text; -webkit-text-fill-color:transparent;
+  }
+  header p { color:var(--muted); font-size:0.85rem; letter-spacing:2px; text-transform:uppercase; margin-top:6px; }
+
+  .bk-info {
+    display:inline-flex; align-items:center; gap:10px;
+    background:rgba(255,215,0,0.08); border:1px solid rgba(255,215,0,0.25);
+    border-radius:10px; padding:8px 18px; margin-top:14px;
+    font-size:0.82rem; color:#ffd700; font-weight:500; letter-spacing:0.5px;
+  }
+
+  /* Swimmer columns */
+  .grid { display:grid; grid-template-columns:1fr 1fr; gap:24px; }
+  @media(max-width:800px) { .grid { grid-template-columns:1fr; } }
+
+  .swimmer-col {}
+
+  .swimmer-header {
+    display:flex; align-items:center; gap:12px;
+    padding:14px 20px; border-radius:14px 14px 0 0;
+    border:1px solid var(--border); border-bottom:none;
+  }
+  .swimmer-header.noah-h { background:linear-gradient(135deg,rgba(0,200,255,0.15),rgba(0,100,180,0.08)); }
+  .swimmer-header.manon-h { background:linear-gradient(135deg,rgba(255,107,157,0.15),rgba(180,30,80,0.08)); }
+
+  .swimmer-avatar {
+    width:44px; height:44px; border-radius:50%;
+    display:flex; align-items:center; justify-content:center;
+    font-size:1.4rem; font-weight:700;
+  }
+  .noah-av { background:rgba(0,200,255,0.2); color:var(--noah); border:2px solid rgba(0,200,255,0.4); }
+  .manon-av { background:rgba(255,107,157,0.2); color:var(--manon); border:2px solid rgba(255,107,157,0.4); }
+
+  .swimmer-name { font-family:'Bebas Neue',cursive; font-size:1.6rem; letter-spacing:2px; }
+  .noah-name { color:var(--noah); }
+  .manon-name { color:var(--manon); }
+  .swimmer-sub { font-size:0.75rem; color:var(--muted); letter-spacing:1px; text-transform:uppercase; }
+
+  /* Legend */
+  .legend {
+    display:flex; gap:14px; flex-wrap:wrap;
+    padding:10px 20px; background:rgba(255,255,255,0.02);
+    border:1px solid var(--border); border-top:none; border-bottom:none;
+    font-size:0.72rem; color:var(--muted);
+  }
+  .leg-item { display:flex; align-items:center; gap:5px; }
+  .leg-dot { width:8px; height:8px; border-radius:50%; }
+
+  /* Table */
+  .swimmer-table {
+    border:1px solid var(--border); border-radius:0 0 14px 14px; overflow:hidden;
+    border-top:none;
+  }
+
+  table { width:100%; border-collapse:collapse; }
+  thead th {
+    padding:9px 12px; font-size:0.65rem; text-transform:uppercase;
+    letter-spacing:1.5px; color:var(--muted); text-align:left;
+    background:rgba(255,255,255,0.03); border-bottom:1px solid var(--border);
+  }
+  thead th:not(:first-child) { text-align:center; }
+
+  tbody tr { border-bottom:1px solid rgba(255,255,255,0.04); transition:background 0.15s; }
+  tbody tr:last-child { border-bottom:none; }
+  tbody tr:hover { background:rgba(255,255,255,0.03); }
+
+  td { padding:10px 12px; font-size:0.83rem; vertical-align:middle; }
+  td:not(:first-child) { text-align:center; }
+
+  td.stroke { font-weight:500; color:var(--text); font-size:0.82rem; }
+
+  td.pb-time { font-family:'Bebas Neue',cursive; font-size:1.15rem; letter-spacing:1px; }
+  .noah-time { color:var(--noah); }
+  .manon-time { color:var(--manon); }
+
+  td.limit-time { font-size:0.8rem; color:var(--muted); font-variant-numeric:tabular-nums; }
+
+  td.gap-td { font-size:0.8rem; font-weight:600; }
+
+  /* Status chip */
+  .chip {
+    display:inline-flex; align-items:center; gap:4px;
+    padding:3px 10px; border-radius:20px;
+    font-size:0.68rem; font-weight:700; letter-spacing:0.5px; white-space:nowrap;
+  }
+  .chip-yes  { background:rgba(74,222,128,0.12); color:var(--green);  border:1px solid rgba(74,222,128,0.3); }
+  .chip-close{ background:rgba(251,146,60,0.12); color:var(--orange); border:1px solid rgba(251,146,60,0.3); }
+  .chip-far  { background:rgba(248,113,113,0.12); color:var(--red);   border:1px solid rgba(248,113,113,0.3); }
+  .chip-none { background:rgba(107,143,174,0.12); color:var(--muted); border:1px solid rgba(107,143,174,0.3); }
+  .chip-via  { background:rgba(255,215,0,0.1);   color:var(--gold);  border:1px solid rgba(255,215,0,0.25); }
+
+  /* Progress bar inside gap cell */
+  .bar-wrap { display:flex; flex-direction:column; align-items:center; gap:3px; }
+  .mini-bar { width:60px; height:4px; background:rgba(255,255,255,0.08); border-radius:2px; overflow:hidden; }
+  .mini-fill { height:100%; border-radius:2px; }
+
+  /* Pool badge */
+  .pool { font-size:0.65rem; color:var(--muted); margin-top:1px; }
+
+  /* Summary strip */
+  .summary {
+    display:flex; gap:8px; flex-wrap:wrap;
+    padding:12px 20px; background:rgba(255,255,255,0.02);
+    border:1px solid var(--border); border-top:none;
+    border-radius:0; /* between header and table */
+  }
+  .sum-item { font-size:0.75rem; }
+  .sum-val { font-family:'Bebas Neue',cursive; font-size:1.1rem; }
+
+  /* Note box */
+  .note {
+    margin-top:6px; padding:10px 14px;
+    background:rgba(255,215,0,0.05); border:1px solid rgba(255,215,0,0.15);
+    border-radius:8px; font-size:0.75rem; color:#c9a83a; line-height:1.5;
+  }
+
+  .section-label {
+    font-size:0.7rem; text-transform:uppercase; letter-spacing:2px;
+    color:var(--muted); margin:28px 0 12px; padding-left:2px;
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header>
+    <h1>BK Lange Baan 11–14 Jaar 2026</h1>
+    <p>Persoonlijke Records vs. Limiettijden</p>
+    <div class="bk-info">🏟️ Wezenberg · 17–19 juli 2026 · 50m bad</div>
+  </header>
+
+  <div class="grid">
+
+    <!-- ═══════════════════ NOAH ═══════════════════ -->
+    <div class="swimmer-col">
+      <div class="swimmer-header noah-h">
+        <div class="swimmer-avatar noah-av">N</div>
+        <div>
+          <div class="swimmer-name noah-name">Noah Vanbrabant</div>
+          <div class="swimmer-sub">2015 · Jongens 11 jaar · De Beringse Tuimelaars</div>
+        </div>
+      </div>
+      <div class="legend">
+        <div class="leg-item"><div class="leg-dot" style="background:var(--green)"></div> Limiet gehaald</div>
+        <div class="leg-item"><div class="leg-dot" style="background:var(--orange)"></div> &lt;5 sec af</div>
+        <div class="leg-item"><div class="leg-dot" style="background:var(--red)"></div> &gt;5 sec af</div>
+        <div class="leg-item"><div class="leg-dot" style="background:var(--gold)"></div> Via-limiet</div>
+      </div>
+      <div class="swimmer-table">
+        <table>
+          <thead>
+            <tr>
+              <th>Onderdeel</th>
+              <th>PB (bad)</th>
+              <th>Limiet</th>
+              <th>Verschil</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody id="noah-tbody"></tbody>
+        </table>
+      </div>
+      <div class="note" id="noah-note"></div>
+    </div>
+
+    <!-- ═══════════════════ MANON ═══════════════════ -->
+    <div class="swimmer-col">
+      <div class="swimmer-header manon-h">
+        <div class="swimmer-avatar manon-av">M</div>
+        <div>
+          <div class="swimmer-name manon-name">Manon Vanbrabant</div>
+          <div class="swimmer-sub">2012 · Meisjes 14 jaar · De Beringse Tuimelaars</div>
+        </div>
+      </div>
+      <div class="legend">
+        <div class="leg-item"><div class="leg-dot" style="background:var(--green)"></div> Limiet gehaald</div>
+        <div class="leg-item"><div class="leg-dot" style="background:var(--orange)"></div> &lt;5 sec af</div>
+        <div class="leg-item"><div class="leg-dot" style="background:var(--red)"></div> &gt;5 sec af</div>
+        <div class="leg-item"><div class="leg-dot" style="background:var(--gold)"></div> Via-limiet</div>
+      </div>
+      <div class="swimmer-table">
+        <table>
+          <thead>
+            <tr>
+              <th>Onderdeel</th>
+              <th>PB (bad)</th>
+              <th>Limiet</th>
+              <th>Verschil</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody id="manon-tbody"></tbody>
+        </table>
+      </div>
+      <div class="note" id="manon-note"></div>
+    </div>
+
+  </div><!-- /grid -->
+
+</div><!-- /wrap -->
+
+<script>
+// ─── DATA FROM PDFs ──────────────────────────────────────────────────────────
+
+// Noah PBs (from swimstats PDF, 20 Feb 2026)
+// 50m bad PBs
+const NOAH_PB_50 = {
+  "50 vrije slag":   { time:"0:41.60", date:"23 Jun 2024" },
+  "100 vrije slag":  { time:"1:19.28", date:"1 Feb 2026" },
+  "200 vrije slag":  { time:"3:04.09", date:"21 Jun 2025" },
+  "400 vrije slag":  { time:"6:38.99", date:"21 Apr 2025" },
+  "50 rugslag":      { time:"0:42.38", date:"22 Jun 2025" },
+  "100 rugslag":     { time:"1:27.54", date:"4 Jan 2026" },
+  "50 schoolslag":   { time:"0:53.35", date:"22 Jun 2025" },
+  "100 schoolslag":  { time:"1:43.92", date:"4 Jan 2026" },
+  "50 vlinderslag":  { time:"0:40.57", date:"11 Nov 2025" },
+  "200 wisselslag":  { time:"3:28.68", date:"21 Apr 2025" },
+};
+// 25m bad PBs
+const NOAH_PB_25 = {
+  "50 vrije slag":   { time:"0:34.81", date:"21 Dec 2025" },
+  "100 vrije slag":  { time:"1:17.96", date:"21 Dec 2025" },
+  "400 vrije slag":  { time:"6:01.88", date:"8 Feb 2026" },
+  "100 rugslag":     { time:"1:24.72", date:"5 Okt 2025" },
+  "200 rugslag":     { time:"2:59.46", date:"8 Feb 2026" },
+  "50 schoolslag":   { time:"0:50.53", date:"12 Jan 2025" },
+  "100 schoolslag":  { time:"1:39.61", date:"5 Okt 2025" },
+  "50 vlinderslag":  { time:"0:39.97", date:"21 Dec 2025" },
+  "100 wisselslag":  { time:"1:27.40", date:"5 Okt 2025" },
+  "200 wisselslag":  { time:"3:07.62", date:"23 Nov 2025" },
+};
+
+// Manon PBs (from swimstats PDF, 20 Feb 2026)
+const MANON_PB_50 = {
+  "50 vrije slag":   { time:"0:35.32", date:"21 Apr 2025" },
+  "100 vrije slag":  { time:"1:14.54", date:"11 Nov 2025" },
+  "400 vrije slag":  { time:"6:04.85", date:"21 Jun 2025" },
+  "50 rugslag":      { time:"0:43.93", date:"22 Jun 2025" },
+  "100 rugslag":     { time:"1:28.67", date:"1 Feb 2026" },
+  "50 schoolslag":   { time:"0:39.32", date:"31 Jan 2026" },
+  "100 schoolslag":  { time:"1:30.03", date:"11 Nov 2025" },
+  "200 schoolslag":  { time:"3:15.53", date:"1 Feb 2026" },
+  "50 vlinderslag":  { time:"0:39.79", date:"22 Jun 2025" },
+  "100 vlinderslag": { time:"1:36.26", date:"11 Nov 2025" },
+  "200 wisselslag":  { time:"3:26.92", date:"19 Mei 2024" },
+};
+const MANON_PB_25 = {
+  "50 vrije slag":   { time:"0:33.32", date:"4 Mei 2025" },
+  "100 vrije slag":  { time:"1:12.42", date:"21 Dec 2025" },
+  "200 vrije slag":  { time:"2:43.52", date:"2 Mar 2025" },
+  "400 vrije slag":  { time:"5:26.07", date:"8 Feb 2026" },
+  "50 rugslag":      { time:"0:40.03", date:"25 Jan 2026" },
+  "100 rugslag":     { time:"1:27.08", date:"5 Okt 2025" },
+  "200 rugslag":     { time:"2:58.15", date:"8 Feb 2026" },
+  "50 schoolslag":   { time:"0:39.78", date:"21 Dec 2025" },
+  "100 schoolslag":  { time:"1:24.65", date:"25 Jan 2026" },
+  "200 schoolslag":  { time:"3:10.68", date:"23 Nov 2025" },
+  "50 vlinderslag":  { time:"0:40.03", date:"3 Mei 2025" },
+  "100 vlinderslag": { time:"1:34.20", date:"4 Mei 2025" },
+  "100 wisselslag":  { time:"1:21.80", date:"25 Jan 2026" },
+  "200 wisselslag":  { time:"2:56.13", date:"23 Nov 2025" },
+};
+
+// BK Limieten 2026 – 50m bad
+// Noah: 11 jaar (2015), Jongens
+// Enkel 200m wisselslag + 400m vrije slag mogen in 50m of 25m bad
+const NOAH_LIMITS = {
+  "400 vrije slag":  { limit:"5:50.01", note:"50m of 25m bad" },
+  "200 wisselslag":  { limit:"3:08.11", note:"50m of 25m bad → geeft ook toegang tot 100v, 100rug, 100school, 100vlinder" },
+  // Via 400m vrije slag:
+  "100 vrije slag":  { limit:null, via:"400 vrije slag", viaLimit:"5:50.01" },
+  // Via 200m wisselslag:
+  "100 rugslag":     { limit:null, via:"200 wisselslag", viaLimit:"3:08.11" },
+  "100 schoolslag":  { limit:null, via:"200 wisselslag", viaLimit:"3:08.11" },
+  "100 vlinderslag": { limit:null, via:"200 wisselslag", viaLimit:"3:08.11" },
+};
+
+// Manon: 14 jaar (2012), Meisjes
+// 13 & 14 jarigen: limieten mogen in 50m of 25m bad
+const MANON_LIMITS = {
+  "100 vrije slag":  { limit:"1:06.67", note:"50m of 25m bad" },
+  "200 vrije slag":  { limit:"2:25.26", note:"50m of 25m bad" },
+  "400 vrije slag":  { limit:"5:04.67", note:"50m of 25m bad" },
+  "800 vrije slag":  { limit:"10:28.28", note:"50m of 25m bad" },
+  "100 rugslag":     { limit:"1:16.80", note:"50m of 25m bad" },
+  "200 rugslag":     { limit:"2:45.53", note:"50m of 25m bad" },
+  "100 schoolslag":  { limit:"1:25.83", note:"50m of 25m bad" },
+  "200 schoolslag":  { limit:"3:04.94", note:"50m of 25m bad" },
+  "100 vlinderslag": { limit:"1:13.82", note:"50m of 25m bad" },
+  "200 vlinderslag": { limit:"2:44.16", note:"50m of 25m bad" },
+  "200 wisselslag":  { limit:"2:48.32", note:"50m of 25m bad" },
+  "400 wisselslag":  { limit:"5:57.11", note:"50m of 25m bad" },
+};
+
+// ─── UTILS ───────────────────────────────────────────────────────────────────
+function parseTime(t) {
+  if (!t || t === '-') return Infinity;
+  t = String(t).trim().replace(',','.');
+  const m = t.match(/^(\d+):(\d+)[:\.](\d+)$/);
+  if (m) return parseInt(m[1])*60 + parseInt(m[2]) + parseFloat('0.'+m[3]);
+  const m2 = t.match(/^(\d+)[:\.](\d+)$/);
+  if (m2) {
+    const a = parseInt(m2[1]), b = parseInt(m2[2]);
+    return a*60 + parseFloat('0.'+String(b).padEnd(2,'0'));
+  }
+  return Infinity;
+}
+
+function fmtDiff(diffSec) {
+  const abs = Math.abs(diffSec);
+  const s = Math.floor(abs);
+  const h = Math.round((abs - s)*100);
+  const sign = diffSec <= 0 ? '-' : '+';
+  return `${sign}${s}.${String(h).padStart(2,'0')}`;
+}
+
+function bestPB(pb50, pb25, stroke) {
+  const t50 = pb50[stroke] ? parseTime(pb50[stroke].time) : Infinity;
+  const t25 = pb25[stroke] ? parseTime(pb25[stroke].time) : Infinity;
+  if (t50 === Infinity && t25 === Infinity) return null;
+  if (t50 <= t25) return { ...pb50[stroke], pool:"50m" };
+  return { ...pb25[stroke], pool:"25m" };
+}
+
+function buildRow(stroke, pb, limit, isNoah) {
+  const accentClass = isNoah ? 'noah-time' : 'manon-time';
+  const accentColor = isNoah ? 'var(--noah)' : 'var(--manon)';
+
+  if (!pb) {
+    // No PB at all
+    return `<tr>
+      <td class="stroke">${stroke}</td>
+      <td class="pb-time" style="color:var(--muted)">–</td>
+      <td class="limit-time">${limit ? limit.limit : '–'}</td>
+      <td>–</td>
+      <td><span class="chip chip-none">Geen PB</span></td>
+    </tr>`;
+  }
+
+  if (limit && limit.via) {
+    // This is a "via" event – check if the gateway event limiet is haald
+    const gatewayPB = isNoah
+      ? bestPB(NOAH_PB_50, NOAH_PB_25, limit.via)
+      : bestPB(MANON_PB_50, MANON_PB_25, limit.via);
+    const gatewayLimit = parseTime(limit.viaLimit);
+    const gatewayPBSec = gatewayPB ? parseTime(gatewayPB.time) : Infinity;
+    const qualified = gatewayPBSec !== Infinity && gatewayPBSec <= gatewayLimit;
+
+    return `<tr>
+      <td class="stroke">${stroke}</td>
+      <td class="pb-time ${accentClass}">${pb.time}<div class="pool">${pb.pool} · ${pb.date}</div></td>
+      <td class="limit-time">via ${limit.via}<br><span style="font-size:0.7rem;color:var(--muted)">(limiet: ${limit.viaLimit})</span></td>
+      <td>–</td>
+      <td>${qualified
+        ? `<span class="chip chip-via">✓ Via ${limit.via}</span>`
+        : `<span class="chip chip-none">Gateway nodig</span>`
+      }</td>
+    </tr>`;
+  }
+
+  if (!limit) {
+    return `<tr>
+      <td class="stroke">${stroke}</td>
+      <td class="pb-time ${accentClass}">${pb.time}<div class="pool">${pb.pool} · ${pb.date}</div></td>
+      <td class="limit-time" style="color:var(--muted)">Geen limiet</td>
+      <td>–</td>
+      <td><span class="chip chip-none">Geen BK limiet</span></td>
+    </tr>`;
+  }
+
+  const pbSec = parseTime(pb.time);
+  const limSec = parseTime(limit.limit);
+  const diff = pbSec - limSec; // negative = under limit (good!)
+  const pct = Math.min(100, Math.round((limSec / pbSec) * 100));
+
+  let chip, barColor;
+  if (diff <= 0) {
+    chip = `<span class="chip chip-yes">✓ BK Limiet</span>`;
+    barColor = 'var(--green)';
+  } else if (diff <= 5) {
+    chip = `<span class="chip chip-close">~${fmtDiff(diff)}</span>`;
+    barColor = 'var(--orange)';
+  } else {
+    chip = `<span class="chip chip-far">${fmtDiff(diff)}</span>`;
+    barColor = 'var(--red)';
+  }
+
+  const diffDisplay = diff <= 0
+    ? `<span style="color:var(--green);font-weight:700">${fmtDiff(diff)}</span>`
+    : `<span style="color:${diff<=5?'var(--orange)':'var(--red)'};font-weight:700">+${fmtDiff(diff)}</span>`;
+
+  return `<tr>
+    <td class="stroke">${stroke}</td>
+    <td class="pb-time ${accentClass}">${pb.time}<div class="pool">${pb.pool} · ${pb.date}</div></td>
+    <td class="limit-time">${limit.limit}</td>
+    <td>
+      <div class="bar-wrap">
+        ${diffDisplay}
+        <div class="mini-bar"><div class="mini-fill" style="width:${pct}%;background:${barColor}"></div></div>
+      </div>
+    </td>
+    <td>${chip}</td>
+  </tr>`;
+}
+
+// ─── BUILD TABLES ─────────────────────────────────────────────────────────────
+
+function buildTable(swimmer) {
+  const isNoah = swimmer === 'noah';
+  const pb50 = isNoah ? NOAH_PB_50 : MANON_PB_50;
+  const pb25 = isNoah ? NOAH_PB_25 : MANON_PB_25;
+  const limits = isNoah ? NOAH_LIMITS : MANON_LIMITS;
+
+  // Collect all strokes from limits + PBs
+  const allStrokes = new Set([
+    ...Object.keys(limits),
+    ...Object.keys(pb50),
+    ...Object.keys(pb25),
+  ]);
+
+  // Order
+  const order = [
+    "100 vrije slag","200 vrije slag","400 vrije slag","800 vrije slag","1500 vrije slag",
+    "50 vrije slag",
+    "100 rugslag","200 rugslag","50 rugslag",
+    "100 schoolslag","200 schoolslag","50 schoolslag",
+    "100 vlinderslag","200 vlinderslag","50 vlinderslag",
+    "100 wisselslag","200 wisselslag","400 wisselslag",
+  ];
+
+  const rows = order
+    .filter(s => allStrokes.has(s))
+    .map(stroke => {
+      const pb = bestPB(pb50, pb25, stroke);
+      const limit = limits[stroke] || null;
+      return buildRow(stroke, pb, limit, isNoah);
+    }).join('');
+
+  document.getElementById(swimmer+'-tbody').innerHTML = rows;
+
+  // Summary counts
+  let qualified = 0, close = 0, far = 0, via = 0;
+  Object.entries(limits).forEach(([stroke, limit]) => {
+    if (limit.via) {
+      // Check gateway
+      const gatewayPB = bestPB(pb50, pb25, limit.via);
+      const gatewayLimSec = parseTime(limit.viaLimit);
+      const gatewayPBSec = gatewayPB ? parseTime(gatewayPB.time) : Infinity;
+      if (gatewayPBSec <= gatewayLimSec) via++;
+    } else if (limit.limit) {
+      const pb = bestPB(pb50, pb25, stroke);
+      if (!pb) { far++; return; }
+      const diff = parseTime(pb.time) - parseTime(limit.limit);
+      if (diff <= 0) qualified++;
+      else if (diff <= 5) close++;
+      else far++;
+    }
+  });
+
+  const noteEl = document.getElementById(swimmer+'-note');
+
+  if (isNoah) {
+    // Noah special rules
+    const has400 = (() => {
+      const pb = bestPB(pb50, pb25, "400 vrije slag");
+      return pb && parseTime(pb.time) <= parseTime("5:50.01");
+    })();
+    const has200w = (() => {
+      const pb = bestPB(pb50, pb25, "200 wisselslag");
+      return pb && parseTime(pb.time) <= parseTime("3:08.11");
+    })();
+    let noahNote = `<strong>BK-regels voor 11-jarigen (jongens 2015):</strong><br>`;
+    noahNote += `• Enkel <strong>400m vrije slag</strong> en <strong>200m wisselslag</strong> mogen in 50m of 25m bad gezwommen worden.<br>`;
+    noahNote += `• Via <strong>400m vrije slag</strong> limiet (5:50.01) → toegang tot 100m vrije slag.<br>`;
+    noahNote += `• Via <strong>200m wisselslag</strong> limiet (3:08.11) → toegang tot 100m vrije slag, 100m rugslag, 100m schoolslag en 100m vlinderslag.<br><br>`;
+    noahNote += `<strong>Huidige situatie:</strong> `;
+
+    const pb400 = bestPB(pb50, pb25, "400 vrije slag");
+    const pb200w = bestPB(pb50, pb25, "200 wisselslag");
+    const diff400 = pb400 ? parseTime(pb400.time) - parseTime("5:50.01") : Infinity;
+    const diff200w = pb200w ? parseTime(pb200w.time) - parseTime("3:08.11") : Infinity;
+
+    if (has400) noahNote += `✅ 400m vrije slag limiet gehaald (${pb400.time} – ${fmtDiff(diff400)}). `;
+    else if (pb400) noahNote += `⏱ 400m vrije slag: nog <strong>+${fmtDiff(diff400)}</strong> te gaan (PB: ${pb400.time}). `;
+    else noahNote += `❌ Geen 400m vrije slag PB. `;
+
+    if (has200w) noahNote += `✅ 200m wisselslag limiet gehaald (${pb200w.time} – ${fmtDiff(diff200w)}).`;
+    else if (pb200w) noahNote += `⏱ 200m wisselslag: nog <strong>+${fmtDiff(diff200w)}</strong> te gaan (PB: ${pb200w.time}).`;
+    else noahNote += `❌ Geen 200m wisselslag PB.`;
+
+    noteEl.innerHTML = noahNote;
+  } else {
+    // Manon summary
+    let txt = `<strong>Samenvatting:</strong> `;
+    txt += `<span style="color:var(--green)">${qualified} limiet(en) gehaald</span>, `;
+    txt += `<span style="color:var(--orange)">${close} bijna (&lt;5s)</span>, `;
+    txt += `<span style="color:var(--red)">${far} nog af te zwemmen</span>. `;
+    txt += `13 &amp; 14-jarigen mogen <strong>alle limieten</strong> in 50m of 25m bad zwemmen.`;
+    noteEl.innerHTML = txt;
+  }
+}
+
+buildTable('noah');
+buildTable('manon');
+</script>
+</body>
+</html>
